@@ -62,6 +62,17 @@
             <version>2.5.0</version>
         </dependency>
 
+         <!--
+            Lombok: gera automaticamente getters, setters, construtores e
+            equals/hashCode via anotações (@Getter, @Setter, etc).
+            Reduz código repetitivo nas Entities e DTOs.
+        -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <optional>true</optional>
+        </dependency>
+
         <!-- Reinicia a aplicação automaticamente ao salvar um arquivo (produtividade em dev) -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
