@@ -53,6 +53,41 @@
         </dependency>
 
         <!--
+            Spring Security: fornece toda a infraestrutura de autenticação e
+            autorização (filtros HTTP, PasswordEncoder, controle de acesso
+            por rota/role, etc). Vamos configurá-lo para ser STATELESS
+            (sem sessão de servidor) e autenticar via JWT dentro de um cookie.
+        -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
+
+        <!--
+            JJWT: biblioteca para gerar e validar tokens JWT.
+            Dividida em 3 artefatos: api (compile), impl e jackson (runtime) -
+            essa separação evita acoplar a aplicação a uma implementação
+            específica, seguindo o mesmo padrão de outras libs Java (slf4j, etc).
+        -->
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-api</artifactId>
+            <version>0.12.6</version>
+        </dependency>
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-impl</artifactId>
+            <version>0.12.6</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-jackson</artifactId>
+            <version>0.12.6</version>
+            <scope>runtime</scope>
+        </dependency>
+
+        <!--
             Gera a documentação Swagger/OpenAPI automaticamente a partir dos
             Controllers. Acessível em /swagger-ui.html depois que a API subir.
         -->
@@ -62,7 +97,15 @@
             <version>2.5.0</version>
         </dependency>
 
-         <!--
+        <!-- Reinicia a aplicação automaticamente ao salvar um arquivo (produtividade em dev) -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-devtools</artifactId>
+            <scope>runtime</scope>
+            <optional>true</optional>
+        </dependency>
+
+        <!--
             Lombok: gera automaticamente getters, setters, construtores e
             equals/hashCode via anotações (@Getter, @Setter, etc).
             Reduz código repetitivo nas Entities e DTOs.
@@ -70,14 +113,6 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <optional>true</optional>
-        </dependency>
-
-        <!-- Reinicia a aplicação automaticamente ao salvar um arquivo (produtividade em dev) -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-devtools</artifactId>
-            <scope>runtime</scope>
             <optional>true</optional>
         </dependency>
 

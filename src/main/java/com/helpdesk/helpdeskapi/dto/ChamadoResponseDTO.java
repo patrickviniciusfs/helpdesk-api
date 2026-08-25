@@ -8,10 +8,11 @@ import java.time.LocalDateTime;
 
 
 public record ChamadoResponseDTO(
-        Long id,
+         Long id,
         String titulo,
         String descricao,
-        String solicitante,
+        UsuarioResumoDTO solicitante,
+        UsuarioResumoDTO tecnicoResponsavel,
         Prioridade prioridade,
         Status status,
         LocalDateTime dataCriacao
@@ -20,10 +21,11 @@ public record ChamadoResponseDTO(
 
     public static ChamadoResponseDTO fromEntity(Chamado chamado) {
         return new ChamadoResponseDTO(
-                chamado.getId(),
+                  chamado.getId(),
                 chamado.getTitulo(),
                 chamado.getDescricao(),
-                chamado.getSolicitante(),
+                UsuarioResumoDTO.fromEntity(chamado.getUsuario()),
+                UsuarioResumoDTO.fromEntity(chamado.getTecnicoResponsavel()),
                 chamado.getPrioridade(),
                 chamado.getStatus(),
                 chamado.getDataCriacao()

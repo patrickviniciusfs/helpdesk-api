@@ -1,6 +1,7 @@
 package com.helpdesk.helpdeskapi.repository;
 
 import com.helpdesk.helpdeskapi.entity.Chamado;
+import com.helpdesk.helpdeskapi.entity.Usuario;
 import com.helpdesk.helpdeskapi.enums.Prioridade;
 
 import java.util.List;
@@ -12,5 +13,12 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ChamadoRepository extends JpaRepository<Chamado, Long> {
 
-    List<Chamado> findByPrioridade(Prioridade prioridade);   
+    List<Chamado> findByPrioridade(Prioridade prioridade);  
+    
+    List<Chamado>findByUsuario(Usuario usuario);
+
+     List<Chamado> findByUsuarioAndPrioridade(
+        Usuario usuario,
+        Prioridade prioridade
+    );
 }

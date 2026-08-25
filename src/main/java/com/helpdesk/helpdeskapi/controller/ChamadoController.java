@@ -3,6 +3,7 @@ package com.helpdesk.helpdeskapi.controller;
 import com.helpdesk.helpdeskapi.dto.ChamadoRequestDTO;
 import com.helpdesk.helpdeskapi.dto.ChamadoResponseDTO;
 import com.helpdesk.helpdeskapi.dto.ChamadoUpdateDTO;
+import com.helpdesk.helpdeskapi.entity.Usuario;
 import com.helpdesk.helpdeskapi.enums.Prioridade;
 import com.helpdesk.helpdeskapi.service.ChamadoService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -11,6 +12,8 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -36,8 +39,10 @@ public class ChamadoController {
    
     @PostMapping
     @Operation(summary = "Cria um novo chamado técnico")
-    public ResponseEntity<ChamadoResponseDTO> criar(@Valid @RequestBody ChamadoRequestDTO dto) {
-        ChamadoResponseDTO chamadoCriado = chamadoService.criar(dto);
+    public ResponseEntity<ChamadoResponseDTO> criar(@Valid @RequestBody ChamadoRequestDTO dto,
+        @AuthenticationPrincipal Usuario usuarioLogado
+    ) {
+        ChamadoResponseDTO chamadoCriado = chamadoService.criar(dto, usuarioLogado);
 
         URI location = URI.create("/chamados/" + chamadoCriado.id());
 
@@ -50,20 +55,23 @@ public class ChamadoController {
     @GetMapping
     @Operation(summary = "Lista todos os chamados, com filtro opcional por prioridade")
     public ResponseEntity<List<ChamadoResponseDTO>> listar(
-            @RequestParam(required = false) Prioridade prioridade
+            @RequestParam(required = false) Prioridade prioridade,
+            @AuthenticationPrincipal Usuario usuarioLogado
     ) {
-        return ResponseEntity.ok(chamadoService.listar(prioridade));
+        return ResponseEntity.ok(chamadoService.listar(prioridade, usuarioLogado));
     }
 
     
     @GetMapping("/{id}")
     @Operation(summary = "Busca um chamado pelo id")
-    public ResponseEntity<ChamadoResponseDTO> buscarPorId(@PathVariable Long id) {
-        return ResponseEntity.ok(chamadoService.buscarPorId(id));
+    public ResponseEntity<ChamadoResponseDTO> buscarPorId(@PathVariable Long id,
+         @AuthenticationPrincipal Usuario usuarioLogado) {
+        return ResponseEntity.ok(chamadoService.buscarPorId(id, usuarioLogado));
     }
 
     @PutMapping("/{id}")
-    @Operation(summary = "Atualiza um chamado existente")
+    @PreAuthorize("hasRole('TECNICO')")
+    @Operation(summary = "Atualiza um chamado existente(Somente técnico)")
     public ResponseEntity<ChamadoResponseDTO> atualizar(
             @PathVariable Long id,
             @Valid @RequestBody ChamadoUpdateDTO dto
@@ -71,8 +79,19 @@ public class ChamadoController {
         return ResponseEntity.ok(chamadoService.atualizar(id, dto));
     }
 
+      @PostMapping("/{id}/assumir")
+    @PreAuthorize("hasRole('TECNICO')")
+    @Operation(summary = "Técnico assume um chamado para si (somente técnico)")
+    public ResponseEntity<ChamadoResponseDTO> assumir(
+            @PathVariable Long id,
+            @AuthenticationPrincipal Usuario tecnicoLogado
+    ) {
+        return ResponseEntity.ok(chamadoService.assumir(id, tecnicoLogado));
+    }
+
     @DeleteMapping("/{id}")
-    @Operation(summary = "Remove um chamado")
+    @PreAuthorize("hasRole('TECNICO')")
+    @Operation(summary = "Remove um chamado(Somente Tecnico)")
     public ResponseEntity<Void> deletar(@PathVariable Long id) {
         chamadoService.deletar(id);
         return ResponseEntity.noContent().build();
