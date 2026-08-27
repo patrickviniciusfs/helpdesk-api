@@ -16,9 +16,6 @@ public record ChamadoUpdateDTO(
         @Size(max = 2000, message = "A descrição deve ter no máximo 2000 caracteres")
         String descricao,
 
-        @NotBlank(message = "O solicitante é obrigatório")
-        @Size(max = 150, message = "O solicitante deve ter no máximo 150 caracteres")
-        String solicitante,
 
         @NotNull(message = "A prioridade é obrigatória")
         Prioridade prioridade,

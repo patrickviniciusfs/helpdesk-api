@@ -40,9 +40,6 @@ public class Chamado {
     @Column (nullable = false, length =2000)
     private String descricao;
 
-    @Column (nullable = false, length = 150)
-    private String solicitante;
-
     @Enumerated (EnumType.STRING)
     @Column (nullable = false)
     private Prioridade prioridade;
